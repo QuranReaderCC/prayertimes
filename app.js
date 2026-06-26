@@ -9,15 +9,20 @@ async function initLocation() {
         async (position) => {
             lat = position.coords.latitude;
             lng = position.coords.longitude;
-
-            locationName = await getLocationName(lat, lng);
-
+            
             isReady = true;
         },
         (error) => {
             console.error("Error getting location:", error);
+
+            lat = -37.8647;
+            lng = 145.2844;
+
+            isReady = true;
         }
     );
+    
+    locationName = await getLocationName(lat, lng);
 }
 
 initLocation();
