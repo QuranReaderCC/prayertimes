@@ -1,36 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://unpkg.com/suncalc@1.9.0/suncalc.js"></script>
+    <script src="https://unpkg.com/tz-lookup/tz.js"></script>
     <title>Prayer Times</title>
 </head>
+
 <body>
     <div class="prayer-time-wrapper">
-        <div class="current-prayer-info">
-            <div class="current-prayer-name">Loading...</div>
-            <div class="time-left-state">Loading...</div>
+        <div class="top">
+            <div class="current-prayer-info">
+                <div class="current-prayer-name">Loading...</div>
+                <div class="time-left-state">Loading...</div>
+                <div class="next-prayer-name"></div>
+                <div class="ends-in"></div>
+            </div>
+            <div class="info-display-wrapper">
+                <div class="location-name"></div>
+                <div class="clock"></div>
+            </div>
         </div>
-        <div class="date-display-wrapper"></div>
+        <div class="date-wrapper">
+            <div>
+                <button>
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            </div>
+            <div class="date"></div>
+                        <div>
+                <button>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
         <div class="prayer-times">
-            <div class="prayer-box active">
-                <div class="prayer-name">Fajr</div>
-                <div id="fajr-start" class="prayer-start-time">Loading...</div>
+            <div class="prayer-box">
+                <div class="prayer-name fajr-box">Fajr</div>
+                <div class="prayer-duration">
+                    <div id="fajr-start">Loading...</div>
+                    <div id="fajr-end">Loading...</div>
+                </div>
             </div>
-            <div class="prayer-box active">
+            <div class="prayer-box wusta-box">
                 <div class="prayer-name">Wusta</div>
-                <div id="wusta-start" class="prayer-start-time">Loading...</div>
+                <div class="prayer-duration">
+                    <div id="wusta-start">Loading...</div>
+                    <div id="wusta-end">Loading...</div>
+                </div>
             </div>
-            <div class="prayer-box active">
+            <div class="prayer-box isha-box">
                 <div class="prayer-name">Isha</div>
-                <div id="isha-start" class="prayer-start-time">Loading...</div>
+                <div class="prayer-duration">
+                    <div id="isha-start">Loading...</div>
+                    <div id="isha-end">Loading...</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>
