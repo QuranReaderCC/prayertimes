@@ -10,10 +10,33 @@ body {
     background-color: rgb(17, 44, 92);
     color: white;
     font-family: sans-serif;
+    margin-top: 23px;
+}
+
+button {
+    background: none;
+    border: none;
+    outline: none;
+    color: inherit;
 }
 
 .prayer-time-wrapper {
+    height: 100%;
     padding: 40px;
+}
+
+.prayer-time-wrapper>*:nth-child(2) {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.top {
+    height: 150px;
+    display: flex;
+}
+
+.top > * {
+    flex: 1;
 }
 
 .current-prayer-info {
@@ -24,21 +47,24 @@ body {
 }
 
 .current-prayer-name {
-    font-size: 12cqw;
+    font-size: 23cqw;
     padding-left: 5px;
 }
 
 .time-left-state {
     width: max-content;
-    font-size: 5cqw;
+    font-size: 10cqw;
     color: rgb(170, 170, 170);
     background-color: rgba(122, 122, 122, 0.2);
     padding: 7px 12px 7px 12px;
     border-radius: 10px;
 }
 
+.ends-in {
+    padding-left: 5px;
+}
+
 .prayer-times {
-    margin-top: 100px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -54,11 +80,50 @@ body {
     border-radius: 10px;
 }
 
-.prayer-box > * {
+.prayer-box>* {
     font-size: 8cqw;
 }
 
 .prayer-box.active {
     color: white;
     border-color: white;
+}
+
+.prayer-name {
+    display: flex;
+    align-items: center;
+    font-size: 8.5cqw;
+}
+
+.prayer-duration {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    text-align: right;
+}
+
+.prayer-duration>*:last-child {
+    font-size: 7cqw;
+}
+
+.info-display-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    justify-content: flex-start;
+    align-items: flex-end;
+    margin-top: 10px;
+    font-size: 4cqw;
+}
+
+.date-wrapper {
+    display: flex;
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.date-wrapper > * {
+    flex: 1;
+    display: flex;
+    justify-content: center;
 }
