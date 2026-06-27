@@ -3,26 +3,28 @@ let isReady = false;
 let lat = null;
 let lng = null;
 let locationName = null;
+let timeZone = null;
 
 async function initLocation() {
     navigator.geolocation.getCurrentPosition(
         async (position) => {
             lat = position.coords.latitude;
             lng = position.coords.longitude;
-            
+
+            locationName = await getLocationName(lat, lng);
+            timeZone = tzlookup(lat, lng);
+
             isReady = true;
         },
-        (error) => {
+        async (error) => {
             console.error("Error getting location:", error);
 
-            lat = -37.8647;
-            lng = 145.2844;
+            locationName = await getLocationName(lat, lng);
+            timeZone = tzlookup(lat, lng);
 
             isReady = true;
         }
     );
-    
-    locationName = await getLocationName(lat, lng);
 }
 
 initLocation();
@@ -41,7 +43,8 @@ async function getLocationName(lat, lng) {
 
     const country = data.address.country;
 
-    return `${city}, ${country}`;
+    if (city) return `${city}, ${country}`;
+    else return country;
 }
 
 let cachedDate = null;
@@ -58,10 +61,12 @@ SunCalc.addTime(-16, 'fajr', null);
 SunCalc.addTime(-4, null, 'isha');
 
 function formatTime(d) {
-    return d.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    return new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: timeZone
+    }).format(d);
 }
 
 function to12Hour(time24) {
@@ -178,29 +183,28 @@ function capitaliseFirst(str) {
 }
 
 /**-----**/
-//const locationNameText = document.querySelector(".location-name");
-//const clock = document.querySelector(".clock");
-//const dateDisplay = document.querySelector(".date-display");
+const locationNameText = document.querySelector(".location-name");
+const clock = document.querySelector(".clock");
+const dateDisplay = document.querySelector(".date");
 
 const currentPrayerName = document.querySelector(".current-prayer-name");
-const startTimeInfo = document.querySelector(".time-left-state");
-//const nextPrayerName = document.querySelector(".next-prayer-name");
-//const endsIn = document.querySelector(".ends-in");
-//const endsAt = document.querySelector(".end-at");
+const timeInfo = document.querySelector(".time-left-state");
+const nextPrayerName = document.querySelector(".next-prayer-name");
+const endsIn = document.querySelector(".ends-in");
 
 const fajrStart = document.getElementById("fajr-start");
-//const fajrEnd = document.getElementById("fajr-end");
+const fajrEnd = document.getElementById("fajr-end");
 const wustaStart = document.getElementById("wusta-start");
-//const wustaEnd = document.getElementById("wusta-end");
+const wustaEnd = document.getElementById("wusta-end");
 const ishaStart = document.getElementById("isha-start");
-//const ishaEnd = document.getElementById("isha-end");
+const ishaEnd = document.getElementById("isha-end");
 /**-----**/
 
 
 window.setInterval(() => {
     if (!isReady) return;
 
-    //locationNameText.textContent = locationName;
+    locationNameText.textContent = locationName;
 
     const date = new Date();
 
@@ -208,22 +212,24 @@ window.setInterval(() => {
         cachedDate = date;
         const times = SunCalc.getTimes(date, lat, lng);
 
+        console.log(times.solarNoon)
+
         prayers.fajr = { start: formatTime(times.fajr), end: formatTime(times.sunrise) };
         prayers.wusta = { start: formatTime(times.solarNoon), end: formatTime(times.isha) };
         prayers.isha = { start: formatTime(times.isha), end: formatTime(times.nadir) };
 
         fajrStart.textContent = to12Hour(prayers.fajr.start);
-        //fajrEnd.textContent = to12Hour(prayers.fajr.end);
+        fajrEnd.textContent = to12Hour(prayers.fajr.end);
         wustaStart.textContent = to12Hour(prayers.wusta.start);
-        //wustaEnd.textContent = to12Hour(prayers.wusta.end);
+        wustaEnd.textContent = to12Hour(prayers.wusta.end);
         ishaStart.textContent = to12Hour(prayers.isha.start);
-        //ishaEnd.textContent = to12Hour(prayers.isha.end);
+        ishaEnd.textContent = to12Hour(prayers.isha.end);
 
-        //dateDisplay.textContent = formatDateLong(formatDate(date));
+        dateDisplay.textContent = formatDateLong(formatDate(date));
     }
 
     if (currentPrayer === null || formatTime(cachedDate) !== formatTime(date)) {
-        //clock.textContent = to12Hour(formatTime(date));
+        clock.textContent = to12Hour(formatTime(date));
 
         const yieldedCurrentPrayer = getCurrentPrayer(date);
         const yieldedNextPrayer = getNextPrayer(date);
@@ -231,19 +237,22 @@ window.setInterval(() => {
         if (yieldedCurrentPrayer) {
             currentPrayer = yieldedCurrentPrayer;
             currentPrayerName.textContent = capitaliseFirst(currentPrayer);
-            startTimeInfo.textContent = to12Hour(prayers[currentPrayer].start);
-            //nextPrayerName.textContent = "";
-            //endsIn.textContent = `Ends in ${timeTillEnd(formatTime(date), currentPrayer)}`;
-            //endsAt.innerHTML = `at <span>${to12Hour(prayers[currentPrayer].end)}</span>`;
+            timeInfo.textContent = to12Hour(prayers[currentPrayer].start) + " - " + to12Hour(prayers[currentPrayer].end);
+            nextPrayerName.textContent = "";
+            endsIn.textContent = `Ends in ${timeTillEnd(formatTime(date), currentPrayer)}`;
         }
         else if (yieldedNextPrayer) {
             nextPrayer = yieldedNextPrayer;
             currentPrayerName.textContent = "";
-            startTimeInfo.textContent = "";
-            //nextPrayerName.textContent = capitaliseFirst(nextPrayer);
-            //endsIn.textContent = `Starts in ${timeTillStart(formatTime(date), nextPrayer)}`;
-            //endsAt.innerHTML = `at <span>${to12Hour(prayers[nextPrayer].start)}</span>`;
+            timeInfo.textContent = "";
+            nextPrayerName.textContent = capitaliseFirst(nextPrayer);
+            endsIn.textContent = `Starts in ${timeTillStart(formatTime(date), nextPrayer)}`;
         }
+
+        const currentOldPrayerBox = document.querySelector(".prayer-box.active");
+        if (currentOldPrayerBox) currentOldPrayerBox.classList.remove("active");
+        const currentNewPrayerBox = document.querySelector(`.${currentPrayer}-box`);
+        if (currentNewPrayerBox) currentNewPrayerBox.classList.add("active");
     }
 }, 1000);
 
